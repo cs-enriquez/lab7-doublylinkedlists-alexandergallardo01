@@ -1,31 +1,85 @@
 	#include "StudentList.h"
 
 	// Define a constructor to initialize the list. The list starts with no Students
-    StudentList::StudentList() {}
+    StudentList::StudentList() {
+		head = nullptr;
+        tail = nullptr;
+        numStudents  = 0;
+	}
 
 	// return the number of students currently in the list
 	int StudentList::listSize() {
-		return -1;
+		return numStudents;
 	}
 
 	//add a Node with a student to the front (head) of the list.
-	void StudentList::addFront(Student s) {}
+	void StudentList::addFront(Student s) {
+		Node *student = new Node(s);
+		student -> next = head;
+		head ->prev = student;
+		head = student;
+     numStudents++;
+    }
+	
 
 	//add a Node with a student to the back (tail) of the list.
-	void StudentList::addBack(Student s) {}
+	void StudentList::addBack(Student s) {
+		Node *student = new student(s)
+		if(head == nullptr){
+	    head = student ;
+	    tail = student ;
+}
+       else{
+	   tail -> next = student;
+	   student ->prev = tail;
+	   tail = student;
+	   
+     }
+	 numStudents ++;
+	}
 
 	//Print out the names of each student in the list.
-	void StudentList::printList() {}
+	void StudentList::printList() {
+		Node *current = head;
+		for(current->next != nullptr){
+			std::cout << current->name << " ";
+			current = current->next;
+		}
+	}
 
 	// Remove the Node with the student at the back (tail) of the list
 	// should not fail if list is empty! Print an error message if this occurs
 	// Don't forget that your head and tail pointers will be null pointers if the list is empty
-	void StudentList::popBack() {}
+	void StudentList::popBack() {
+		
+		if (tail == nullptr){
+			std::cout<< "List is empty" << endl;
+		}
+		else(
+			Node *temp = tail -> prev;
+			delete tail;
+			tail = temp;
+			tail->next = nullptr;
+		)
+		numStudents --;
+	}
 
 	// Remove the Node with the student at the front (head) of the list
 	// should not fail if list is empty! Print an error message if this occurs
 	// Don't forget that your head and tail pointers will be null pointers if the list is empty
-	void StudentList::popFront() {}
+	void StudentList::popFront() {
+		if (head == nullptr){
+			std::cout << "List is empty" << endl;
+			return -1;
+		}
+		else{
+			Node *temp = head -> next;
+			delete head;
+			head = temp;
+		}
+		numstudents --;
+
+	}
 
 	//insert a student at the position "index".
 	// for this list, count head as index 0
@@ -33,14 +87,45 @@
 	// print a message and insert the student at the back of the list
 	// the previous Node at your target index should be moved forward. "For exampe, Node with student at index i, becomes index i+1" 
 	// Remember that you already have methods that can add students to the front or back of list if needed! Don't repeat this code.
-	void StudentList::insertStudent(Student s, int index) {}
+	void StudentList::insertStudent(Student s, int index) {
+		
+		if(i > numStudents-1){
+	    std:: cout << "Index is out bounds, will add at the end" << " ";
+		addBack(s);
+		numStudents ++;
+
+}
+       else{
+		Node *student = new student(s)
+		Node *current = head;
+		for(int j = 0; j <index; j++){
+			current = current -> next;
+		}
+		current -> next -> next -> prev = student;
+		current -> next = student;
+		student -> prev = current;
+     }
+	 numStudents ++;
+	}
+
+	}
 
 	//find the student with the given id number and return them
 	// if no student matches, print a message 
 	// and create and return a dummy student object
 	Student StudentList::retrieveStudent(int idNum) {
-		Student fixthis;
-		return fixthis;
+		Node *current = head;
+		for(current->next != nullptr){
+			if((current->data->id) == idNum){
+				return current->data;
+			}
+			current = current->next;
+		}
+		else{
+			std:: cout << "There is no student with matching id" << endl;
+		}
+		Student dummy;
+		return dummy;
 	}
 
 	// Remove a Node with a student from the list with a given id number
