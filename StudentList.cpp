@@ -1,4 +1,5 @@
 	#include "StudentList.h"
+	using namespace std;
 
 	// Define a constructor to initialize the list. The list starts with no Students
     StudentList::StudentList() {
@@ -15,16 +16,21 @@
 	//add a Node with a student to the front (head) of the list.
 	void StudentList::addFront(Student s) {
 		Node *student = new Node(s);
-		student -> next = head;
-		head ->prev = student;
-		head = student;
+		student->next = head;
+       if (head != nullptr) {
+    head->prev = student;
+     } 
+      else {
+    tail = student;  // If the list was empty
+     }
+     head = student;
      numStudents++;
     }
 	
 
 	//add a Node with a student to the back (tail) of the list.
 	void StudentList::addBack(Student s) {
-		Node *student = new student(s)
+		Node *student = new Node(s);
 		if(head == nullptr){
 	    head = student ;
 	    tail = student ;
@@ -41,8 +47,8 @@
 	//Print out the names of each student in the list.
 	void StudentList::printList() {
 		Node *current = head;
-		for(current->next != nullptr){
-			std::cout << current->name << " ";
+		while(current != nullptr){
+			std::cout << current->data.name << " ";
 			current = current->next;
 		}
 	}
@@ -54,13 +60,18 @@
 		
 		if (tail == nullptr){
 			std::cout<< "List is empty" << endl;
+			return;
 		}
-		else(
+		else{
 			Node *temp = tail -> prev;
 			delete tail;
 			tail = temp;
-			tail->next = nullptr;
-		)
+			if (tail != nullptr) {
+        tail->next = nullptr;
+    } else {
+        head = nullptr;  // List is now empty
+    }
+		}
 		numStudents --;
 	}
 
@@ -70,14 +81,20 @@
 	void StudentList::popFront() {
 		if (head == nullptr){
 			std::cout << "List is empty" << endl;
-			return -1;
+			return ;
 		}
 		else{
 			Node *temp = head -> next;
 			delete head;
 			head = temp;
+			if (head != nullptr) {
+        head->prev = nullptr;
+    } 
+	else {
+        tail = nullptr;  // List is now empty
+    }
 		}
-		numstudents --;
+		numStudents --;
 
 	}
 
@@ -89,51 +106,84 @@
 	// Remember that you already have methods that can add students to the front or back of list if needed! Don't repeat this code.
 	void StudentList::insertStudent(Student s, int index) {
 		
-		if(i > numStudents-1){
+		if (index >= numStudents){
 	    std:: cout << "Index is out bounds, will add at the end" << " ";
 		addBack(s);
-		numStudents ++;
 
 }
        else{
-		Node *student = new student(s)
+		Node *student = new Node(s);
 		Node *current = head;
 		for(int j = 0; j <index; j++){
 			current = current -> next;
 		}
-		current -> next -> next -> prev = student;
-		current -> next = student;
-		student -> prev = current;
+		student->next = current->next;
+		if (current->next != nullptr) {
+         current->next->prev = student;
+}
+        current->next = student;
+        student->prev = current;
+        numStudents++;
      }
-	 numStudents ++;
+	
 	}
 
-	}
+	
 
 	//find the student with the given id number and return them
 	// if no student matches, print a message 
 	// and create and return a dummy student object
 	Student StudentList::retrieveStudent(int idNum) {
 		Node *current = head;
-		for(current->next != nullptr){
-			if((current->data->id) == idNum){
+		while(current!= nullptr){
+			if((current->data.id) == idNum){
 				return current->data;
 			}
 			current = current->next;
 		}
-		else{
-			std:: cout << "There is no student with matching id" << endl;
-		}
+		std:: cout << "There is no student with matching id" << endl;
 		Student dummy;
 		return dummy;
 	}
 
 	// Remove a Node with a student from the list with a given id number
 	// If no student matches, print a message and do nothing
-	void StudentList::removeStudentById(int idNum) {}
+	void StudentList::removeStudentById(int idNum) {
+		Node *current = head;
+		while (current != nullptr) {
+    if (current->data.id == idNum) {
+        if (current->prev != nullptr) {
+            current->prev->next = current->next;
+        } else {
+            head = current->next;
+        }
+        if (current->next != nullptr) {
+            current->next->prev = current->prev;
+        } else {
+            tail = current->prev;
+        }
+		numStudents--;
+        delete current;
+        
+        return;
+    }
+    current = current->next;
+}
+std::cout << "No student matches" << std::endl;
+	}
 
 	//Change the gpa of the student with given id number to newGPA
-	void StudentList::updateGPA(int idNum, float newGPA) {}
+	void StudentList::updateGPA(int idNum, float newGPA) {
+		Node *current = head;
+		while(current != nullptr){
+			if((current->data.id) == idNum){
+				current -> data.GPA = newGPA;
+				return;
+			}
+			current = current->next;
+	}
+	std::cout << "No student matches" << std::endl;
+	}
 
 	//Add all students from otherList to this list.
 	//otherlist should be empty after this operation.
@@ -146,12 +196,32 @@
 	s1 <-> s2 <-> s3 <-> s4 <-> s5
 	and otherList should be empty and have zero students.
 	*/
-	void StudentList::mergeList(StudentList &otherList) {}
+	void StudentList::mergeList(StudentList &otherList) {
+		tail->next = otherList.head;  
+        otherList.head->prev = tail;  
+        tail = otherList.tail;  
+        numStudents += otherList.numStudents;
+    otherList.head = nullptr;
+    otherList.tail = nullptr;
+    otherList.numStudents = 0;
+}
+
+		
+	
 
 	//create a StudentList of students whose gpa is at least minGPA.
 	//Return this list.  The original (current) list should
 	//not be modified (do not remove the students from the original list).
 	StudentList StudentList::honorRoll(float minGPA) {
-		StudentList fixthis;
-		return fixthis;
+		StudentList honorroll;
+		Node *current = head;
+		while(current != nullptr){
+		if((current->data.GPA) >= minGPA){
+				honorroll.addBack(current->data);
+			}
+			current = current->next;
+		}
+
+
+		return honorroll;
 	}
